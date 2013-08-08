@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <TextView
+            android:id="@+id/debugText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="19dp"
+            android:text="IP Address: "
+            android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+    <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/debugText"
+            android:layout_below="@+id/debugText"
+            android:layout_marginTop="32dp"
+            android:text="Port Number: "
+            android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+    <EditText
+            android:id="@+id/ipAddress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/debugText"
+            android:layout_alignBottom="@+id/debugText"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="22dp"
+            android:layout_toRightOf="@+id/textView2"
+            >
+    </EditText>
+
+    <Button
+            android:id="@+id/connectBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Connect"
+            android:layout_marginTop="17dp"
+            android:layout_below="@+id/portNo"
+            android:layout_centerHorizontal="true"/>
+
+    <EditText
+            android:id="@+id/portNo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/textView2"
+            android:layout_alignBottom="@+id/textView2"
+            android:layout_alignRight="@+id/ipAddress"
+            android:layout_toRightOf="@+id/textView2"
+            android:inputType="number"/>
+
+</RelativeLayout>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">PiMote</string>
+    <string name="action_settings">Help</string>
+    <string name="help_info">\n<b>IP: </b>This is the local IP address of your Pi. To find this, simply type \'ifconfig\' into a terminal. It is also displayed as your Pi powers on.\n\n<b>Port: </b>This is the port number that you set the python program to run on (it is passed into server.start(ip, port)). Port number 8090 is recommended.</string>
+    <string name="hello_world">Hello world!</string>
+
+</resources>

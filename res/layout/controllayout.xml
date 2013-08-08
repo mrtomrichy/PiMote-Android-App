@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+        >
+
+    <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:id="@+id/left_motor_forward"
+            android:layout_marginTop="13dp"
+            android:src="@drawable/ic_action_forward"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:padding="10dp"/>
+
+    <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:id="@+id/right_motor_forward"
+            android:src="@drawable/ic_action_forward"
+            android:layout_alignTop="@+id/left_motor_forward"
+            android:layout_alignParentRight="true"
+            android:padding="10dp"/>
+
+    <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:id="@+id/left_motor_backwards"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:src="@drawable/ic_action_backwards"
+            android:padding="10dp"
+            />
+
+    <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:id="@+id/right_motor_backwards"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/ic_action_backwards"
+            android:background="@color/black"
+            android:padding="10dp"/>
+
+    <com.uom.pimote.mjpegvideo.MjpegView
+            android:id="@+id/mv"
+            android:layout_width="320dp"
+            android:layout_height="240dp"
+            android:layout_weight="1"
+            android:layout_alignParentBottom="true"
+            android:layout_toLeftOf="@+id/right_motor_forward"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/left_motor_forward"/>
+
+    <ImageView
+            android:layout_width="320dp"
+            android:layout_height="240dp"
+            android:id="@+id/HUD"
+            android:src="@drawable/preview_hud"
+            android:contentDescription=""
+            android:visibility="visible"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/left_motor_forward"
+            android:layout_alignParentBottom="true"
+            android:layout_toLeftOf="@+id/right_motor_forward"
+            android:alpha="1"/>
+
+    <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/microphone"
+            android:src="@drawable/mic"
+            android:scaleType="centerCrop"
+            android:clickable="false"
+            android:cropToPadding="false"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/ultrasonicReading"
+            android:layout_alignTop="@+id/left_motor_forward"
+            android:layout_centerHorizontal="true"
+            android:textColor="#2d65a7"
+            />
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/batteryReading"
+            android:textColor="#2d65a7"
+            android:layout_toLeftOf="@+id/right_motor_forward"
+            android:layout_marginRight="10dp"
+            android:layout_alignTop="@+id/right_motor_forward"/>
+
+</RelativeLayout>
