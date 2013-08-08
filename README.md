@@ -2,7 +2,8 @@ PiMote Android App
 
 This is the companion app to the PiMote software, built for controlling a Raspberry Pi with an Android phone.
 
-To install
+To install:
+
     Find the PiMote.apk in out/production/PiMote
     Transfer this file to your device, and activate it to install
     
