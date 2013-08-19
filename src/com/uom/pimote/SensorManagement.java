@@ -1,5 +1,6 @@
 package com.uom.pimote;
 
+import android.app.Activity;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -20,7 +21,7 @@ public class SensorManagement implements SensorEventListener {
 
     public SensorManagement(Context c, int speedValue, TCPClient tcp) {
         this.tcp = tcp;
-        mSensorManager = (SensorManager) c.getSystemService(c.SENSOR_SERVICE);
+        mSensorManager = (SensorManager) c.getSystemService(Activity.SENSOR_SERVICE);
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         switch(speedValue){
             case 1: speed = SensorManager.SENSOR_DELAY_NORMAL; break;
@@ -52,7 +53,6 @@ public class SensorManagement implements SensorEventListener {
     }
 
     public float[] getValues() {
-        float[] values = {sensorX, sensorY, sensorZ};
-        return values;
+        return new float[]{sensorX, sensorY, sensorZ};
     }
 }

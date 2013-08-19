@@ -3,8 +3,10 @@ package com.uom.pimote.managers;
 import android.content.Context;
 import android.text.Html;
 import android.util.Log;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -35,7 +37,7 @@ public class RegularButtonManager extends PimoteManager {
         ((Communicator) c).setContentView(R.layout.activity_main);
         this.layout = (LinearLayout) ((Communicator) c).findViewById(R.id.mainlayout);
         threads = new ArrayList<RecurringInfo>();
-        if(sensors!=0){
+        if (sensors != 0) {
             startSensors(sensors, tcp);
         }
     }
@@ -45,8 +47,9 @@ public class RegularButtonManager extends PimoteManager {
     public void onMessage(String[] message) {
         super.onMessage(message);
     }
+
     @Override
-    public void setup(String[] setup){
+    public void setup(String[] setup) {
         switch (Integer.parseInt(setup[0])) {
             case CLEAR_ALL:
                 Log.e("SETUP", "Clearing");
@@ -83,21 +86,37 @@ public class RegularButtonManager extends PimoteManager {
             case SPACER:
                 layout.addView(createSpacer(setup), viewPosition++);
                 break;
+            case SCROLLED_OUTPUT_TEXT:
+                layout.addView(createScrolledOutputText(setup), viewPosition++);
+                break;
             default:
                 Log.e("SETUP", "Unknown component");
                 break;
         }
     }
+
     @Override
-    public void changeOutput(String[] info){
-        if (Integer.parseInt(info[0]) == TEXT_OUTPUT) {
+    public void changeOutput(String[] info) {
+        int type = Integer.parseInt(info[0]);
+        if (type == TEXT_OUTPUT || type == SCROLLED_OUTPUT_TEXT) {
             TextView output = getTextView(Integer.parseInt(info[1]));
             String out = addIllegalChars(info[2]);
             output.setText(Html.fromHtml(out));
-        } else if (Integer.parseInt(info[0]) == PROGRESS_BAR) {
+            if (type == SCROLLED_OUTPUT_TEXT) {
+                final ScrollView scroll = ((ScrollView)output.getParent());
+                Log.e("SETUP", scroll.getScrollY()+", "+(scroll.getChildAt(0).getHeight()-(scroll.getHeight()+(scroll.getHeight()/10))));
+                if(scroll.getScrollY() > scroll.getChildAt(0).getHeight()-(scroll.getHeight()+(scroll.getHeight()/2)))
+                    scroll.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            scroll.fullScroll(View.FOCUS_DOWN);
+                        }
+                    });
+            }
+        } else if (type == PROGRESS_BAR) {
             ProgressBar bar = getProgressBar(Integer.parseInt(info[1]));
             bar.setProgress(Integer.parseInt(info[2]));
-        } else if (Integer.parseInt(info[0]) == TOGGLE_BUTTON) {
+        } else if (type == TOGGLE_BUTTON) {
             ToggleButton t = getToggleButton(Integer.parseInt(info[1]));
             t.setChecked(Integer.parseInt(info[2]) == 1);
         }

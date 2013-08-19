@@ -14,6 +14,8 @@ import com.uom.pimote.R;
 import com.uom.pimote.TCPClient;
 import com.uom.pimote.mjpegvideo.MjpegView;
 
+// THIS NO LONGER WORKS
+
 public class ControllerManager extends PimoteManager {
 
     boolean forwardPress, backPress, leftPress, rightPress = false;

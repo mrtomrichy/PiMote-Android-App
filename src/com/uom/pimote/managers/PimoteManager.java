@@ -12,6 +12,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -36,7 +37,7 @@ public class PimoteManager {
     // Protocol Variables to decide what components to use
     public static final int BUTTON = 1, TEXT_INPUT = 2, TOGGLE_BUTTON = 3, TEXT_OUTPUT = 4,
             VIDEO_FEED = 5, VOICE_INPUT = 6, RECURRING_INFO = 7, PROGRESS_BAR = 8,
-            SPACER = 9, CLEAR_ALL = 0;
+            SPACER = 9, SCROLLED_OUTPUT_TEXT = 10, CLEAR_ALL = 0;
 
     // Global Variables
     ArrayList<RecurringInfo> threads; // All threads
@@ -61,22 +62,23 @@ public class PimoteManager {
         switch (Integer.parseInt(message[0])) {
             case SETUP:
                 String[] setup = new String[message.length - 1];
-                for (int i = 1; i < message.length; i++)
-                    setup[i - 1] = message[i];
+                System.arraycopy(message, 1, setup, 0, message.length-1);
                 setup(setup);
                 break;
 
             case REQUEST_OUTPUT_CHANGE:
                 String[] info = new String[message.length - 1];
-                for (int i = 1; i < message.length; i++)
-                    info[i - 1] = message[i];
+                System.arraycopy(message, 1, info, 0, message.length-1);
                 changeOutput(info);
                 break;
         }
     }
 
-    public void setup(String[] setup){}
-    public void changeOutput(String[] info){}
+    public void setup(String[] setup) {
+    }
+
+    public void changeOutput(String[] info) {
+    }
 
     public String addIllegalChars(String string) {
         return string.replace("%/", ",");
@@ -175,6 +177,33 @@ public class PimoteManager {
         text.setId(Integer.parseInt(setup[1]));
 
         return text;
+    }
+
+    //Component type, Id, Initial text, Text Size
+    public ScrollView createScrolledOutputText(final String[] setup) {
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        params.setMargins(0, 10, 0, 10);
+        TextView text = new TextView(c);
+        text.setTextSize(18);
+        text.setLayoutParams(params);
+        if (setup.length >= 3) {
+            String out = addIllegalChars(setup[2]);
+            text.setText(Html.fromHtml(out));
+        }
+        text.setTextSize(Integer.parseInt(setup[3]));
+        text.setId(Integer.parseInt(setup[1]));
+        final ScrollView s = new ScrollView(c);
+        LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, Integer.parseInt(setup[4]));
+        s.addView(text);
+        s.setLayoutParams(p);
+        s.post(new Runnable() {
+            @Override
+            public void run() {
+                s.fullScroll(View.FOCUS_DOWN);
+            }
+        });
+        return s;
     }
 
     //Component type, Id, Outside Ip, IP
@@ -283,8 +312,8 @@ public class PimoteManager {
 
     // Stop all threads from running
     public void stopAllThreads() {
-        for (int i = 0; i < threads.size(); i++) {
-            threads.get(i).stopThread();
+        for (RecurringInfo i : threads) {
+            i.stopThread();
         }
         stopVideo();
         if (sensors != null) sensors.pause();

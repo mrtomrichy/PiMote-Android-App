@@ -22,11 +22,13 @@ public class Communicator extends Activity {
     // ALL PROTOCOL VARIABLES
     public static final int SEND_PASSWORD = 0;
     public static final int SEND_DATA = 1;
+    public static final int SEND_USERNAME = 2;
     private static final int NORMAL_CONTROL = 0;
     private static final int JOYSTICK_CONTROL = 1;
     private static final int REQUEST_CODE = 1234;
     private static final int SET_CONTROL_TYPE = 0;
     private static final int REQUEST_PASSWORD = 9855;
+    private static final int REQUEST_USERNAME = 3362;
     private static final int STORE_KEY = 5649;
     private static final int PASSWORD_FAIL = 2314;
     private static final int DISCONNECTED_BY_SERVER = 6234;
@@ -158,6 +160,32 @@ public class Communicator extends Activity {
         alert.show();
     }
 
+    // Used to input a username
+    public void usernameDialog() {
+        //new dialog
+        AlertDialog.Builder alert = new AlertDialog.Builder(Communicator.this);
+
+        alert.setTitle("Username");
+        alert.setMessage("Input a username");
+
+        final EditText input = new EditText(Communicator.this);
+        alert.setView(input);
+
+        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                String username = input.getText().toString();
+                tcp.sendMessage(SEND_USERNAME + "," + username);
+            }
+        });
+
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                endActivity("Cancelled", true);
+            }
+        });
+        alert.show();
+    }
+
     // Class for parallel communication
     public class connectTask extends AsyncTask<String, String, TCPClient> {
 
@@ -214,12 +242,16 @@ public class Communicator extends Activity {
                         SharedPreferences prefs = getSharedPreferences("pimotePrefs", MODE_PRIVATE);
                         SharedPreferences.Editor edit = prefs.edit();
                         edit.remove(ip);
+                        edit.commit();
                         passwordDialog();
                         authTypeKey = false;
                     } else {
                         Log.e("SETUP", "Password fail");
                         endActivity("Wrong Password", true);
                     }
+                    break;
+                case REQUEST_USERNAME:
+                    usernameDialog();
                     break;
 
                 case DISCONNECTED_BY_SERVER: // Kicked by server
@@ -241,8 +273,7 @@ public class Communicator extends Activity {
 
                 case MESSAGE_FOR_MANAGER: // Message to go through to manager
                     String[] message = new String[info.length - 1];
-                    for (int i = 1; i < info.length; i++)
-                        message[i - 1] = info[i];
+                    System.arraycopy(info, 1, message, 0, info.length-1);
                     manager.onMessage(message);
                     break;
 

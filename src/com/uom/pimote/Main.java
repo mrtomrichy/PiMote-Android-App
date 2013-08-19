@@ -29,6 +29,7 @@ public class Main extends Activity implements OnClickListener {
             if (!problem.equals(""))
                 Toast.makeText(this, problem, Toast.LENGTH_LONG).show();
         } catch (Exception e) {
+            //No problem
         }
 
         ipField = (EditText) findViewById(R.id.ipAddress);
