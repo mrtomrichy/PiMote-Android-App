@@ -2,6 +2,8 @@ package com.uom.pimote.managers;
 
 import android.content.Context;
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
+import android.text.Html;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -14,8 +16,6 @@ import com.uom.pimote.R;
 import com.uom.pimote.TCPClient;
 import com.uom.pimote.mjpegvideo.MjpegView;
 
-// THIS NO LONGER WORKS
-
 public class ControllerManager extends PimoteManager {
 
     boolean forwardPress, backPress, leftPress, rightPress = false;
@@ -23,14 +23,15 @@ public class ControllerManager extends PimoteManager {
     String URL;
     ImageView hud;
     private MjpegView mv = null;
-    final TextView ultrasonic;
-    final TextView battery;
+    private TextView ultrasonic;
+    private TextView battery;
+    ImageView microphone;
 
-    public ControllerManager(final Context c, final TCPClient tcp, String ip, int videoV, int voiceV, int recurringV, int sleepTime, int orientation) {
-        super(tcp, c, orientation);
-        ((Communicator)c).getActionBar().hide();
-        ((Communicator)c).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        ((Communicator)c).setContentView(R.layout.controllayout);
+    public ControllerManager(final Context c, final TCPClient tcp, String ip) {
+        super(tcp, c, PimoteManager.ORIENTATION_LANDSCAPE);
+        ((Communicator) c).getActionBar().hide();
+        ((Communicator) c).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        ((Communicator) c).setContentView(R.layout.controllayout);
 
 
         this.tcp = tcp;
@@ -38,21 +39,13 @@ public class ControllerManager extends PimoteManager {
         final ImageView leftBackwards;
         final ImageView rightForward;
         final ImageView rightBackwards;
-        final ImageView microphone;
 
-
-
-        boolean video = videoV != 0;
-        boolean voice = voiceV != 0;
-        boolean recurring = recurringV != 0;
         leftForward = (ImageView) ((Communicator) c).findViewById(R.id.left_motor_forward);
         leftBackwards = (ImageView) ((Communicator) c).findViewById(R.id.left_motor_backwards);
         rightForward = (ImageView) ((Communicator) c).findViewById(R.id.right_motor_forward);
         rightBackwards = (ImageView) ((Communicator) c).findViewById(R.id.right_motor_backwards);
         microphone = (ImageView) ((Communicator) c).findViewById(R.id.microphone);
         hud = (ImageView) ((Communicator) c).findViewById(R.id.HUD);
-        ultrasonic = (TextView) ((Communicator) c).findViewById(R.id.ultrasonicReading);
-        battery = (TextView) ((Communicator) c).findViewById(R.id.batteryReading);
 
 
         leftForward.setClickable(true);
@@ -110,43 +103,15 @@ public class ControllerManager extends PimoteManager {
 
         });
 
-        if (voice) {
-            microphone.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    ((Communicator) c).startVoiceRecognition(1);
-                } // onClick()
-            });
-            microphone.setVisibility(View.VISIBLE);
-        } else {
-            microphone.setVisibility(View.INVISIBLE);
-        } // if - else
-
         URL = "http://" + ip + ":8080/?action=stream";
 
         mv = (MjpegView) ((Communicator) c).findViewById(R.id.mv);
 
-        if (video) {
-            mv.setVisibility(View.VISIBLE);
-            hud.setVisibility(View.VISIBLE);
-            startVideo(mv, URL);
-        } else {
-            mv.setVisibility(View.INVISIBLE);
-            hud.setVisibility(View.INVISIBLE);
-        }
+        mv.setVisibility(View.VISIBLE);
+        hud.setVisibility(View.VISIBLE);
+        startVideo(mv, URL);
 
-        if(recurring){
-            Log.e("RECURRING", "Sleep time: " + sleepTime);
-            addRecurringInformation(2, sleepTime, tcp);
-        }
 
-    }
-    @Override
-    public void onMessage(String[] message){
-        //DO WHATEVER
-        Log.e("CONTROL", "Received message");
-        battery.setText(message[0]);
-        ultrasonic.setText(message[1]);
     }
 
     public void toggleControl(int position, boolean value) {
@@ -154,24 +119,61 @@ public class ControllerManager extends PimoteManager {
         switch (position) {
             case 1:
                 if (forwardPress != value)
-                    send("0," + (0 + flag));
+                    send("444," + (0 + flag));
                 forwardPress = value;
                 break;
             case 2:
                 if (backPress != value)
-                    send("0," + (2 + flag));
+                    send("444," + (2 + flag));
                 backPress = value;
                 break;
             case 3:
                 if (leftPress != value)
-                    send("0," + (4 + flag));
+                    send("444," + (4 + flag));
                 leftPress = value;
                 break;
             case 4:
                 if (rightPress != value)
-                    send("0," + (6 + flag));
+                    send("444," + (6 + flag));
                 rightPress = value;
                 break;
+        }
+    }
+
+    @Override
+    public void setup(String[] setup) {
+        Log.e("Setup", "Setup");
+        if (Integer.parseInt(setup[0]) == TEXT_OUTPUT) {
+            Log.e("SETUP", "TEXT");
+            if (battery == null) {
+                battery = (TextView) ((Communicator) c).findViewById(R.id.batteryReading);
+                battery.setId(Integer.parseInt(setup[1]));
+                battery.setTextColor(Color.RED);
+            } else if (ultrasonic == null) {
+                ultrasonic = (TextView) ((Communicator) c).findViewById(R.id.ultrasonicReading);
+                ultrasonic.setId(Integer.parseInt(setup[1]));
+            }
+        } else if (Integer.parseInt(setup[0]) == RECURRING_INFO) {
+            Log.e("SETUP", "Adding poll");
+            addRecurringInformation(Integer.parseInt(setup[1]), Integer.parseInt(setup[2]), tcp);
+        } else if (Integer.parseInt(setup[0]) == VOICE_INPUT){
+            microphone = (ImageView)((Communicator)c).findViewById(R.id.microphone);
+            microphone.setId(Integer.parseInt(setup[1]));
+            microphone.setOnClickListener(new View.OnClickListener(){
+                public void onClick(View v){
+                    ((Communicator) c).startVoiceRecognition(microphone.getId());
+                }
+            });
+        }
+    }
+
+    @Override
+    public void changeOutput(String[] info) {
+        int type = Integer.parseInt(info[0]);
+        if (type == TEXT_OUTPUT || type == SCROLLED_OUTPUT_TEXT) {
+            TextView output = getTextView(Integer.parseInt(info[1]));
+            String out = addIllegalChars(info[2]);
+            output.setText(Html.fromHtml(out));
         }
     }
 }

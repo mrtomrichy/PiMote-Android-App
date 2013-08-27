@@ -38,6 +38,7 @@ public class PimoteManager {
     public static final int BUTTON = 1, TEXT_INPUT = 2, TOGGLE_BUTTON = 3, TEXT_OUTPUT = 4,
             VIDEO_FEED = 5, VOICE_INPUT = 6, RECURRING_INFO = 7, PROGRESS_BAR = 8,
             SPACER = 9, SCROLLED_OUTPUT_TEXT = 10, CLEAR_ALL = 0;
+    public static final int ORIENTATION_PORTRAIT = 0, ORIENTATION_LANDSCAPE = 1;
 
     // Global Variables
     ArrayList<RecurringInfo> threads; // All threads
@@ -53,7 +54,7 @@ public class PimoteManager {
         threads = new ArrayList<RecurringInfo>();
         streams = new ArrayList<MjpegStreamManager>();
         this.c = c;
-        int orient = orientation == 0 ? ActivityInfo.SCREEN_ORIENTATION_PORTRAIT : ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
+        int orient = orientation == ORIENTATION_PORTRAIT ? ActivityInfo.SCREEN_ORIENTATION_PORTRAIT : ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
         ((Communicator) c).setRequestedOrientation(orient);
     }
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     android:background="@color/black"
         >
 
@@ -46,26 +46,32 @@
 
     <com.uom.pimote.mjpegvideo.MjpegView
             android:id="@+id/mv"
-            android:layout_width="320dp"
-            android:layout_height="240dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_alignParentBottom="true"
             android:layout_toLeftOf="@+id/right_motor_forward"
             android:layout_alignParentTop="true"
-            android:layout_toRightOf="@+id/left_motor_forward"/>
+            android:layout_toRightOf="@+id/left_motor_forward"
+            android:layout_centerHorizontal="true"/>
 
     <ImageView
-            android:layout_width="320dp"
-            android:layout_height="240dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:id="@+id/HUD"
             android:src="@drawable/preview_hud"
             android:contentDescription=""
             android:visibility="visible"
             android:layout_alignParentTop="true"
             android:layout_toRightOf="@+id/left_motor_forward"
-            android:layout_alignParentBottom="true"
             android:layout_toLeftOf="@+id/right_motor_forward"
-            android:alpha="1"/>
+            android:alpha="1"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_alignLeft="@+id/mv"
+            android:layout_alignRight="@+id/mv"
+            android:layout_alignBottom="@+id/mv"
+            android:layout_alignTop="@+id/mv"/>
 
     <ImageView
             android:layout_width="50dp"
@@ -76,7 +82,8 @@
             android:clickable="false"
             android:cropToPadding="false"
             android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"/>
+            android:layout_centerHorizontal="true"
+            android:layout_alignBottom="@+id/mv"/>
 
     <TextView
             android:layout_width="wrap_content"
